@@ -1,0 +1,3 @@
+src/voice_generator.py
+src/video_router.py
+src/ffmpeg_editor.py
