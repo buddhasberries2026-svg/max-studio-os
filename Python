@@ -1,0 +1,89 @@
+pipelines/run_one_episode.py
+import os
+import json
+
+from src.episode_generator import generate_episode
+from src.voice_generator import generate_voice
+from src.ffmpeg_editor import render_episode
+
+
+EPISODE_FOLDER = "episodes/episode_01"
+
+
+def build_episode_structure():
+    """
+    Step 1: Generate structured episode JSON
+    """
+
+    scenes = [
+        {
+            "voice_text": "Calm gets paid. Click quickly.",
+            "visual_prompt": "calm dog sitting at doorway, soft lighting, training clarity"
+        },
+        {
+            "voice_text": "We reward four paws on the floor.",
+            "visual_prompt": "dog calmly approaching door, trainer clicking, peaceful home"
+        }
+    ]
+
+    generate_episode(
+        "Episode 1 - Calm Doorway Training",
+        scenes,
+        EPISODE_FOLDER
+    )
+
+
+def generate_voice_layer():
+    """
+    Step 2: Convert script → voice (ElevenLabs)
+    """
+
+    script_path = f"{EPISODE_FOLDER}/script.json"
+
+    with open(script_path, "r") as f:
+        data = json.load(f)
+
+    audio_folder = f"{EPISODE_FOLDER}/scenes/audio"
+    os.makedirs(audio_folder, exist_ok=True)
+
+    for scene in data["scenes"]:
+        output_file = os.path.join(audio_folder, scene["audio_file"])
+        generate_voice(scene["voice_text"], output_file)
+
+
+def run_video_pipeline():
+    """
+    Step 3: Placeholder for Runway/Pika/Luma video generation
+    (manual or semi-auto step for now)
+    """
+
+    print("👉 Generate video clips using Runway/Pika/Luma based on prompts in script.json")
+    print("👉 Save clips into: episodes/episode_01/scenes/video/")
+
+
+def render_final_video():
+    """
+    Step 4: FFmpeg assembly
+    """
+
+    render_episode(EPISODE_FOLDER)
+
+
+def run_full_pipeline():
+    print("\n🚀 MAX STUDIO OS - STARTING EPISODE BUILD\n")
+
+    build_episode_structure()
+    print("\n🧠 Episode structure created\n")
+
+    generate_voice_layer()
+    print("\n🎙 Voice layer complete\n")
+
+    run_video_pipeline()
+    print("\n🎥 Video generation step (manual or semi-auto)\n")
+
+    render_final_video()
+    print("\n🎬 Final episode rendered\n")
+
+
+if __name__ == "__main__":
+    run_full_pipeline()
