@@ -1,0 +1,57 @@
+dashboard/
+│
+├── app.py
+├── templates/
+│   └── index.html
+├── static/
+│   └── style.css
+dashboard/app.py
+from flask import Flask, render_template, jsonify
+import subprocess
+import os
+
+app = Flask(__name__)
+
+# ----------------------------
+# DASHBOARD HOME
+# ----------------------------
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+
+# ----------------------------
+# RUN EPISODE PIPELINE
+# ----------------------------
+@app.route("/run-episode", methods=["POST"])
+def run_episode():
+    subprocess.run(["python", "pipelines/run_one_episode.py"])
+    return jsonify({"status": "Episode pipeline started"})
+
+
+# ----------------------------
+# GENERATE RUNWAY PROMPTS ONLY
+# ----------------------------
+@app.route("/runway-prompts", methods=["POST"])
+def runway_prompts():
+    subprocess.run(["python", "src/video_router.py"])
+    return jsonify({"status": "Runway prompt pack generated"})
+
+
+# ----------------------------
+# CHECK EPISODE FILES
+# ----------------------------
+@app.route("/status")
+def status():
+    episode_path = "episodes/episode_01"
+    files = []
+
+    for root, dirs, filenames in os.walk(episode_path):
+        for f in filenames:
+            files.append(os.path.join(root, f))
+
+    return jsonify({"files": files})
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
