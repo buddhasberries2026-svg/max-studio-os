@@ -1,0 +1,10 @@
+run_pipeline.py
+print("Starting Clear Mind Canine video pipeline...")
+
+# Step 1: generate script
+# Step 2: ElevenLabs voice
+# Step 3: Runway or animation
+# Step 4: FFmpeg edit
+# Step 5: export video
+
+print("Done!")
