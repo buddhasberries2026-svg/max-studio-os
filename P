@@ -1,0 +1,48 @@
+import json
+import os
+
+def generate_episode(episode_title, scenes, output_path):
+    """
+    Builds a structured episode.json file for Max Studio OS
+    """
+
+    episode = {
+        "title": episode_title,
+        "scenes": []
+    }
+
+    for i, scene in enumerate(scenes):
+        episode["scenes"].append({
+            "id": i + 1,
+            "voice_text": scene["voice_text"],
+            "visual_prompt": scene["visual_prompt"],
+            "video_file": f"scene_{i+1}.mp4",
+            "audio_file": f"scene_{i+1}.mp3"
+        })
+
+    os.makedirs(output_path, exist_ok=True)
+
+    file_path = os.path.join(output_path, "script.json")
+
+    with open(file_path, "w") as f:
+        json.dump(episode, f, indent=4)
+
+    print(f"Episode generated at {file_path}")
+
+
+# Example test run
+if __name__ == "__main__":
+    generate_episode(
+        "Episode 1 - Calm Doorway Training",
+        [
+            {
+                "voice_text": "Calm gets paid. Click quickly.",
+                "visual_prompt": "calm dog sitting at doorway, soft lighting"
+            },
+            {
+                "voice_text": "We reward four paws on the floor.",
+                "visual_prompt": "dog standing calmly at door, trainer clicking"
+            }
+        ],
+        "episodes/episode_01"
+    )
