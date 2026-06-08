@@ -1,0 +1,63 @@
+dashboard/templates/index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Max Studio OS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-900 text-white">
+
+<div class="p-6">
+
+    <h1 class="text-3xl font-bold mb-6">🐶 Max Studio OS Dashboard</h1>
+
+    <!-- ACTION BUTTONS -->
+    <div class="grid grid-cols-2 gap-4">
+
+        <button onclick="runEpisode()" class="bg-green-600 p-4 rounded">
+            ▶ Run Full Episode Pipeline
+        </button>
+
+        <button onclick="runwayPrompts()" class="bg-blue-600 p-4 rounded">
+            🎥 Generate Runway Prompts
+        </button>
+
+        <button onclick="checkStatus()" class="bg-purple-600 p-4 rounded">
+            📁 Check Episode Files
+        </button>
+
+    </div>
+
+    <!-- OUTPUT -->
+    <div class="mt-6">
+        <h2 class="text-xl mb-2">System Output</h2>
+        <pre id="output" class="bg-black p-4 rounded h-96 overflow-auto"></pre>
+    </div>
+
+</div>
+
+<script>
+
+async function runEpisode() {
+    const res = await fetch("/run-episode", { method: "POST" });
+    const data = await res.json();
+    document.getElementById("output").innerText = JSON.stringify(data, null, 2);
+}
+
+async function runwayPrompts() {
+    const res = await fetch("/runway-prompts", { method: "POST" });
+    const data = await res.json();
+    document.getElementById("output").innerText = JSON.stringify(data, null, 2);
+}
+
+async function checkStatus() {
+    const res = await fetch("/status");
+    const data = await res.json();
+    document.getElementById("output").innerText = JSON.stringify(data, null, 2);
+}
+
+</script>
+
+</body>
+</html>
