@@ -1,0 +1,49 @@
+src/video_router.py
+import json
+import os
+
+def generate_runway_prompt(scene):
+    """
+    Converts structured scene into Runway-ready prompt
+    """
+
+    base_style = "cinematic dog training educational animation, soft lighting, calm atmosphere"
+
+    prompt = f"""
+{scene['visual_prompt']}
+
+STYLE:
+{base_style}
+
+REQUIREMENTS:
+- calm emotional tone
+- clear behavior visibility
+- focus on click timing moments
+"""
+
+    return prompt
+
+
+def export_runway_pack(script_path):
+    """
+    Creates a Runway-ready prompt file for manual generation
+    """
+
+    with open(script_path, "r") as f:
+        data = json.load(f)
+
+    prompts = []
+
+    for scene in data["scenes"]:
+        prompts.append({
+            "scene_id": scene["id"],
+            "prompt": generate_runway_prompt(scene),
+            "video_filename": scene["video_file"]
+        })
+
+    output_file = os.path.join(os.path.dirname(script_path), "runway_prompts.json")
+
+    with open(output_file, "w") as f:
+        json.dump(prompts, f, indent=4)
+
+    print(f"✅ Runway prompt pack created: {output_file}")
